@@ -14,7 +14,12 @@
     <p>{{ post.text|linebreaksbr }}</p>
     {% if post.group %}
       <a href=/group/{{ post.group.slug }}>все записи группы "{{ post.group.title }}"</a>
-    {% endif%}  
+    {% endif%}
+    {% if user.is_authenticated %}
+    <p>
+      <a href=posts/{{ post.pk }}/edit> Редактировать</a>
+    </p>
+    {% endif %}
     {% if not forloop.last %}<hr>
     {% endif %}
   {% endfor %}

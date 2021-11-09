@@ -7,19 +7,10 @@ from django.contrib.auth.decorators import login_required
 
 
 def index(request):
-    #post_list = Post.objects.all().order_by('-pub_date')
-    # Если порядок сортировки определен в классе Meta модели,
-    # запрос будет выглядить так:
     post_list = Post.objects.all()
-    # Показывать по 10 записей на странице.
     paginator = Paginator(post_list, 10)
-
-    # Из URL извлекаем номер запрошенной страницы - это значение параметра page
     page_number = request.GET.get('page')
-
-    # Получаем набор записей для страницы с запрошенным номером
     page_obj = paginator.get_page(page_number)
-    # Отдаем в словаре контекста
     context = {
         'page_obj': page_obj,
     }
@@ -97,5 +88,6 @@ def post_edit(request, post_id):
         'post': post,
         'form': form,
         'is_edit': True,
+        'post_id': post_id,
     }
     return render(request, 'posts/create_post.html', context)

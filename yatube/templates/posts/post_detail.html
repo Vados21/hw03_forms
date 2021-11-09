@@ -1,53 +1,41 @@
-{% extends 'base.html' %} 
-{% block title %}
-  Пост {{ post_number }}
-{% endblock title %}
+{% extends 'base.html'%}
+
 {% block content %}
-  <body>       
-    
+
     <main>
-      <div class="row">
-        <aside class="col-12 col-md-3">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              Дата публикации: {{ post.pub_date|date:"d E Y" }}
-            </li>
-            <!-- если у поста есть группа -->   
+      <div class="container py-5">
+        <div class="row">
+          <aside class="col-12 col-md-3">
+            <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                Группа: <!-- Название группы -->
-                <a href="{{ post.group.slug }}">
-                  все записи группы
-                </a>
-              </li>
+                Дата публикации: {{ post.pub_date|date:"d E Y" }}
+              </li>               
               <li class="list-group-item">
-                Автор: {{ post.author.get_full_name }}
+                
+                <a href=/group/{{ post.group.slug }}>все записи группы "{{ post.group.title }}"</a>
+              </li>            
+              <li class="list-group-item">
+                Автор: {{ user.username }}
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
-              Всего постов автора:  <span ><!-- --></span>
-            </li>
-            <li class="list-group-item">
-              <a href="{{ post.group.slug }}">
-                все посты пользователя
+                Всего постов автора:  <span >{{ posts.post_counter }}</span>
+              </li>
+              <li class="list-group-item">
+                <a href="{% url 'posts:profile' user %}">
+                  все посты пользователя
+                </a>
+              </li>
+            </ul>
+          </aside>
+          <article class="col-12 col-md-9">
+            <p>{{ post.text }}</p>
+            {% if user.is_authenticated %}
+              <a href=posts/{{ post.pk }}/edit> Редактировать</a>
+              редактировать запись
               </a>
-            </li>
-          </ul>
-        </aside>
-        <article class="col-12 col-md-9">
-          <p>
-           <!--
-            [Фокшаны.] Еще переходъ до Фокшанъ, во время котораго я ѣхалъ съ 
-            Монго. Человѣкъ пустой, но съ твердыми, хотя и ложными убѣжденіями.
-            Генерал[у] по этому должно быть случаю, угодно было спрашивать о мое
-            мъ здоровьи.
-            Свинья! К[о]вырялъ носъ и ничего не написалъ — вотъ 2 упрека за 
-            нын[ѣшній]     день. Послѣдній упрекъ становится слишкомъ частъ, 
-            хотя походъ и можетъ служить въ немъ отчасти извиненіемъ. 
-            Отношенія мои съ товарищами становятся такъ пріятны, что мнѣ 
-            жалко бросить штабъ. Здоровье кажется (2) лучше. 
-           --> 
-          </p>
-        </article>
-      </div> 
+            {% endif %}                
+          </article>
+        </div>     
+      </div>
     </main>
-  </body>
 {% endblock content%}
