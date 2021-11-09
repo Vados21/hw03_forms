@@ -21,26 +21,14 @@ class PasswordChange(PasswordChangeForm):
         fields = ('__all__')
 
 
-#class PasswordReset(PasswordResetForm):
- #   class Meta:
- #       model = User
- #       fields = ('__all__')
-
-
 class ContactForm(forms.ModelForm):
     class Meta:
-        # На основе какой модели создаётся класс формы
         model = Contact
-        # Укажем, какие поля будут в форме
         fields = ('name', 'email', 'subject', 'body')
 
     def clean_subject(self):
         data = self.cleaned_data['subject']
-
-        # Если пользователь не поблагодарил администратора - считаем это ошибкой
         if 'спасибо' not in data.lower():
-            raise forms.ValidationError('Вы обязательно должны нас поблагодарить!')
-
-        # Метод-валидатор обязательно должен вернуть очищенные данные, 
-        # даже если не изменил их
-        return data 
+            raise forms.ValidationError(
+                'Вы обязательно должны нас поблагодарить!')
+        return data
