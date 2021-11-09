@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import (PasswordChangeForm, PasswordResetForm,
-                                       UserCreationForm)
-from django.forms import ModelForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 
 from .models import Contact
 

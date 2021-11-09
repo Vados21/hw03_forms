@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
-
 from django.views.generic.edit import CreateView
 
 from .forms import ContactForm, CreationForm, PasswordResetForm
@@ -15,9 +15,6 @@ class SignUp(CreateView):
 class Contact(CreateView):
     form_class = ContactForm
     template_name = 'users/contact.html'
-
-
-from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
