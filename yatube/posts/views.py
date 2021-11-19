@@ -20,7 +20,7 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
-    paginator = Paginator(post_list, 2)
+    paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     template = 'posts/group_list.html'
@@ -32,8 +32,8 @@ def group_posts(request, slug):
 
 
 def profile(request, username):
-    user = User.objects.get(username=username)
-    post_list = Post.objects.filter(author=user)
+    user = get_object_or_404(User, username=username)
+    post_list = Post.objects.select_related('group').filter(author=user)
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     post_counter = paginator.count
@@ -41,7 +41,6 @@ def profile(request, username):
     context = {
         'username': user,
         'post_counter': post_counter,
-        'post_list': post_list,
         'page_obj': page_obj,
     }
     return render(request, 'posts/profile.html', context)
@@ -50,13 +49,11 @@ def profile(request, username):
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, id=post_id)
-    author_posts_count = Post.objects.filter(author_id=post.author_id).count()
-    text = get_object_or_404(Post, pk=post_id)
-    posts = Post.objects.filter(pk=post_id)
+    author_posts_count = Post.objects.select_related(
+        'group').filter(author_id=post.author_id).count()
 
     context = {
-        'posts': posts,
-        'text': text,
+        'post': post,
         'author_posts_count': author_posts_count
     }
     return render(request, template, context)
@@ -71,7 +68,7 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect(f'/profile/{request.user}/')
+            return redirect('posts:profile', post.author)
     context = {'form': form}
 
     return render(request, 'posts/create_post.html', context)

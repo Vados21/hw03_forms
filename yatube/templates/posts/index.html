@@ -5,7 +5,7 @@
   {% for post in page_obj %}
     <ul>
       <li>
-        Автор: {{ post.author.get_full_name }}
+        Автор: {{ post.author }}
       </li>
       <li>
         Дата публикации: {{ post.pub_date|date:"d E Y" }}
@@ -13,11 +13,11 @@
     </ul>
     <p>{{ post.text|linebreaksbr }}</p>
     {% if post.group %}
-      <a href=/group/{{ post.group.slug }}>все записи группы "{{ post.group.title }}"</a>
+      <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы "{{ post.group.title }}"</a>
     {% endif%}
     {% if user.is_authenticated %}
     <p>
-      <a href=posts/{{ post.pk }}/edit> Редактировать</a>
+      <a href={% url 'posts:post_edit' post.pk %}> Редактировать</a>
     </p>
     {% endif %}
     {% if not forloop.last %}<hr>
