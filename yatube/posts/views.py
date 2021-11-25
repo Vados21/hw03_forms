@@ -33,7 +33,7 @@ def group_posts(request, slug):
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    post_list = Post.objects.select_related('group').filter(author=user)
+    post_list = user.posts.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     post_counter = paginator.count
@@ -49,9 +49,7 @@ def profile(request, username):
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, id=post_id)
-    author_posts_count = Post.objects.select_related(
-        'group').filter(author_id=post.author_id).count()
-
+    author_posts_count = post.author.posts.count()
     context = {
         'post': post,
         'author_posts_count': author_posts_count
@@ -78,9 +76,10 @@ def post_create(request):
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     form = PostForm(request.POST or None, instance=post)
-    if form.is_valid():
-        form.save()
-        return redirect('posts:post_detail', post_id)
+    if post.author == request.user:
+        if form.is_valid():
+            form.save()
+            return redirect('posts:post_detail', post_id)
     context = {
         'post': post,
         'form': form,
